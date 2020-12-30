@@ -64,7 +64,7 @@ $this->sCompileDir = '/<deployment_root>/releases/current/source/tmp/';
 You also need to create shared directories for files that should be persisted
 during deployments:
 
-```
+```bash
 mkdir -p <deployment_root>/shared/out/contents
 mkdir <deployment_root>/shared/out/downloads
 mkdir <deployment_root>/shared/out/pictures
