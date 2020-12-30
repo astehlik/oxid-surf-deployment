@@ -2,6 +2,7 @@
     "name": "de-swebhosting/oxideshop-surf-deployment",
     "description": "Surf deployment for OXID eShop",
     "type": "library",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Alexander Stehlik",
