@@ -97,6 +97,10 @@ class OxidEshop extends BaseApplication
 
     private function registerGruntBuildTask(Workflow $workflow): void
     {
+        if (!($this->hasOption('enableGruntWaveBuild') && $this->getOption('enableGruntWaveBuild'))) {
+            return;
+        }
+
         $workflow->defineTask(
             'De\\SWebhosting\\Surf\\DefinedTask\\GruntBuildTask',
             LocalShellTask::class,
