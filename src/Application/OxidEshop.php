@@ -11,7 +11,6 @@ use TYPO3\Surf\Domain\Model\Workflow;
 use TYPO3\Surf\Task\LocalShellTask;
 use TYPO3\Surf\Task\Package\GitTask;
 use TYPO3\Surf\Task\ShellTask;
-use TYPO3\Surf\Task\SymlinkReleaseTask;
 
 class OxidEshop extends BaseApplication
 {
@@ -36,7 +35,7 @@ class OxidEshop extends BaseApplication
         $this->addSymlink('source/out/pictures', '../../../../shared/out/pictures');
     }
 
-    public function registerTasks(Workflow $workflow, Deployment $deployment)
+    public function registerTasks(Workflow $workflow, Deployment $deployment): void
     {
         parent::registerTasks($workflow, $deployment);
 

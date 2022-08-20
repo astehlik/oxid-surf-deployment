@@ -13,14 +13,14 @@ class ComposerDumpAutoloadTask extends AbstractComposerTask
      *
      * @var string
      */
-    protected $command = 'dump-autoload';
+    protected string $command = 'dump-autoload';
 
     /**
      * Arguments for the command
      *
      * @var array
      */
-    protected $arguments = [
+    protected array $arguments = [
         '--no-ansi',
         '--no-interaction',
         '--no-dev',
