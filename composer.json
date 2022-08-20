@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "typo3/surf": "^2.0.0",
-        "intera/typo3-surf-tasks": "^1.0"
+        "typo3/surf": "^3.0"
     },
     "autoload": {
         "psr-4": {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace De\SWebhosting\OxidSurf\Application;
 
 use De\SWebhosting\OxidSurf\Task\ComposerDumpAutoloadTask;
-use Intera\Surf\Task\HardlinkReleaseTask;
 use TYPO3\Surf\Application\BaseApplication;
 use TYPO3\Surf\Domain\Model\Deployment;
 use TYPO3\Surf\Domain\Model\Workflow;
@@ -40,8 +39,6 @@ class OxidEshop extends BaseApplication
     public function registerTasks(Workflow $workflow, Deployment $deployment)
     {
         parent::registerTasks($workflow, $deployment);
-
-        $this->replaceSymlinkWithHardlinkRelease($workflow);
 
         $this->registerFixPermissionsTask($workflow);
         $this->registerGruntBuildTask($workflow);
@@ -117,11 +114,5 @@ class OxidEshop extends BaseApplication
         );
 
         $workflow->afterStage('package', 'De\\SWebhosting\\Surf\\DefinedTask\\GruntBuildTask', $this);
-    }
-
-    private function replaceSymlinkWithHardlinkRelease(Workflow $workflow): void
-    {
-        $workflow->removeTask(SymlinkReleaseTask::class);
-        $workflow->addTask(HardlinkReleaseTask::class, 'switch', $this);
     }
 }
