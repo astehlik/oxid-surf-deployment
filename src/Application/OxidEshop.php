@@ -35,9 +35,25 @@ class OxidEshop extends BaseApplication
         $this->addSymlink('source/out/pictures', '../../../../shared/out/pictures');
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.MissingImport)
+     */
+    public function enableHardLinkReleaseIfAvailable(Workflow $workflow): void
+    {
+        if (class_exists('De\\SWebhosting\\TYPO3Surf\\HardlinkReleaseRegisterer')) {
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            /** @noinspection PhpUndefinedClassInspection */
+            /** @noinspection PhpUndefinedNamespaceInspection */
+            (new \De\SWebhosting\TYPO3Surf\HardlinkReleaseRegisterer())
+                ->replaceSymlinkWithHardlinkRelease($workflow, $this);
+        }
+    }
+
     public function registerTasks(Workflow $workflow, Deployment $deployment): void
     {
         parent::registerTasks($workflow, $deployment);
+
+        $this->enableHardLinkReleaseIfAvailable($workflow);
 
         $this->registerFixPermissionsTask($workflow);
         $this->registerGruntBuildTask($workflow);
@@ -45,6 +61,9 @@ class OxidEshop extends BaseApplication
         $workflow->addTask(ComposerDumpAutoloadTask::class, 'update');
     }
 
+    /**
+     * @return string[]
+     */
     protected function getRsyncExcludes(): array
     {
         return [
@@ -107,7 +126,7 @@ class OxidEshop extends BaseApplication
                     'yarn install',
                     'cd {workspacePath}',
                     'yarn install',
-                    '~/.yarn/bin/grunt build'
+                    '~/.yarn/bin/grunt build',
                 ],
             ]
         );

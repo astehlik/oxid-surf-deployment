@@ -1,8 +1,8 @@
 {
     "name": "de-swebhosting/oxideshop-surf-deployment",
     "description": "Surf deployment for OXID eShop",
-    "type": "library",
     "license": "GPL-3.0-or-later",
+    "type": "library",
     "authors": [
         {
             "name": "Alexander Stehlik",
@@ -10,11 +10,94 @@
         }
     ],
     "require": {
+        "php": ">=7.4 <8.2",
         "typo3/surf": "^3.0"
+    },
+    "require-dev": {
+        "de-swebhosting/php-codestyle": "^4.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "suggest": {
+        "de-swebhosting/typo3-surf-hardlink-release": "If package is loaded hardlinks will be used in the release process"
     },
     "autoload": {
         "psr-4": {
             "De\\SWebhosting\\OxidSurf\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "De\\SWebhosting\\OxidSurf\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "composer-normalize": [
+            "@composer-normalize-install",
+            "composer --working-dir=tools/composer-normalize normalize ../../composer.json --dry-run --diff"
+        ],
+        "composer-normalize-fix": [
+            "@composer-normalize-install",
+            "composer --working-dir=tools/composer-normalize normalize ../../composer.json"
+        ],
+        "composer-normalize-install": [
+            "mkdir -p tools/composer-normalize",
+            "composer require --no-interaction --no-plugins --working-dir=tools/composer-normalize ergebnis/composer-normalize",
+            "composer config --no-interaction --no-plugins --working-dir=tools/composer-normalize allow-plugins true"
+        ],
+        "composer-validate": "composer validate --strict",
+        "fix": [
+            "@composer-normalize-fix",
+            "@php-cs-fixer-fix",
+            "@php-codesniffer-fix"
+        ],
+        "lint": [
+            "@composer-validate",
+            "@composer-normalize",
+            "@php-codesniffer",
+            "@php-cs-fixer",
+            "@php-lint",
+            "@phpmd",
+            "@phpstan"
+        ],
+        "php-codesniffer": [
+            "@php-codesniffer-install",
+            "@php tools/php-codesniffer/vendor/bin/phpcs --standard=PSRDefault src tests"
+        ],
+        "php-codesniffer-fix": [
+            "@php-codesniffer-install",
+            "@php tools/php-codesniffer/vendor/bin/phpcbf --standard=PSRDefault src tests"
+        ],
+        "php-codesniffer-install": [
+            "mkdir -p tools/php-codesniffer",
+            "composer require --no-interaction --working-dir=tools/php-codesniffer squizlabs/php_codesniffer",
+            "@php tools/php-codesniffer/vendor/bin/phpcs --config-set installed_paths vendor/de-swebhosting/php-codestyle/PhpCodeSniffer"
+        ],
+        "php-cs-fixer": [
+            "@php-cs-fixer-install",
+            "@php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --dry-run --diff"
+        ],
+        "php-cs-fixer-fix": [
+            "@php-cs-fixer-install",
+            "@php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix"
+        ],
+        "php-cs-fixer-install": [
+            "mkdir -p tools/php-cs-fixer",
+            "composer require --no-interaction --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer"
+        ],
+        "php-lint": "find src tests -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v 'No syntax errors detected')",
+        "phpmd": [
+            "mkdir -p tools/phpmd",
+            "composer require --no-interaction --working-dir=tools/phpmd phpmd/phpmd",
+            "@php tools/phpmd/vendor/bin/phpmd src text vendor/de-swebhosting/php-codestyle/PhpMd/RulesetTypo3.xml"
+        ],
+        "phpstan": [
+            "mkdir -p tools/phpstan",
+            "composer require --working-dir=tools/phpstan phpstan/phpstan",
+            "@php tools/phpstan/vendor/bin/phpstan.phar analyse src tests --level 9"
+        ],
+        "phpunit": "@php vendor/bin/phpunit tests",
+        "test": [
+            "@phpunit"
+        ]
     }
 }

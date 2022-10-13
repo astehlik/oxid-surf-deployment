@@ -1,0 +1,29 @@
+name: Run tests and linting
+on:
+  - push
+  - pull_request
+  - manual
+jobs:
+  test:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+        php-versions: ['7.4', '8.0', '8.1']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run linting
+        run: composer run-script lint
+
+      - name: Run tests
+        run: composer run-script test
