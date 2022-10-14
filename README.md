@@ -1,5 +1,7 @@
 # Oxid eShop Surf deployment
 
+[![Run tests and linting](https://github.com/astehlik/oxid-surf-deployment/actions/workflows/test.yml/badge.svg)](https://github.com/astehlik/oxid-surf-deployment/actions/workflows/test.yml)
+
 This library contains an application that allows the deployment
 of [Oxid eShops](<(https://www.oxid-esales.com/)>) with
 [TYPO3 Surf](<(https://github.com/TYPO3/Surf)>).
