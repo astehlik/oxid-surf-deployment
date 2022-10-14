@@ -10,6 +10,7 @@ class BuildTools
      * @var string[]
      */
     private static array $toolDirectories = [
+        'bc-check',
         'composer-normalize',
         'php-codesniffer',
         'php-cs-fixer',

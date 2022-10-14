@@ -32,6 +32,12 @@
         }
     },
     "scripts": {
+        "bc-check": [
+            "@create-tool-directories",
+            "composer require --no-interaction --no-plugins --working-dir=tools/bc-check roave/backward-compatibility-check",
+            "composer config --no-interaction --no-plugins --working-dir=tools/bc-check allow-plugins true",
+            "@php tools/bc-check/vendor/bin/roave-backward-compatibility-check"
+        ],
         "composer-normalize": [
             "@composer-normalize-install",
             "composer --working-dir=tools/composer-normalize normalize ../../composer.json --dry-run --diff"
@@ -54,6 +60,7 @@
             "@prettier-fix"
         ],
         "lint": [
+            "@bc-check",
             "@composer-validate",
             "@composer-normalize",
             "@php-codesniffer",
