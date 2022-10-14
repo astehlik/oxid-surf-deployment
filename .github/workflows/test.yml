@@ -1,8 +1,11 @@
 name: Run tests and linting
 on:
-  - push
-  - pull_request
-  - workflow_dispatch
+  push:
+    branches:
+      - 'main'
+      - 'develop'
+    pull_requests:
+    workflow_dispatch:
 jobs:
   test:
     runs-on: ${{ matrix.operating-system }}
