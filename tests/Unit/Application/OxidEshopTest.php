@@ -18,7 +18,7 @@ use TYPO3\Surf\Task\ShellTask;
 use TYPO3\Surf\Task\SymlinkReleaseTask;
 
 /**
- * @covers \OxidEshop
+ * @covers \De\SWebhosting\OxidSurf\Application\OxidEshop
  */
 class OxidEshopTest extends TestCase
 {
