@@ -34,7 +34,7 @@ jobs:
         run: composer run-script test
 
       - name: Check backwards compatibility
-        run: composer run-script bc-test
+        run: composer run-script bc-check
 
   test-cross-platform:
     runs-on: ${{ matrix.operating-system }}
