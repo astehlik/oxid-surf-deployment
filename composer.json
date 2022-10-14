@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "de-swebhosting/php-codestyle": "^4.0",
+        "de-swebhosting/typo3-surf-hardlink-release": "^1.0",
         "phpunit/phpunit": "^9.5"
     },
     "suggest": {
@@ -40,15 +41,17 @@
             "composer --working-dir=tools/composer-normalize normalize ../../composer.json"
         ],
         "composer-normalize-install": [
-            "mkdir -p tools/composer-normalize",
+            "@create-tool-directories",
             "composer require --no-interaction --no-plugins --working-dir=tools/composer-normalize ergebnis/composer-normalize",
             "composer config --no-interaction --no-plugins --working-dir=tools/composer-normalize allow-plugins true"
         ],
         "composer-validate": "composer validate --strict",
+        "create-tool-directories": "De\\SWebhosting\\OxidSurf\\Tests\\BuildTools::createToolsDirectories",
         "fix": [
             "@composer-normalize-fix",
             "@php-cs-fixer-fix",
-            "@php-codesniffer-fix"
+            "@php-codesniffer-fix",
+            "@prettier-fix"
         ],
         "lint": [
             "@composer-validate",
@@ -57,7 +60,8 @@
             "@php-cs-fixer",
             "@php-lint",
             "@phpmd",
-            "@phpstan"
+            "@phpstan",
+            "@prettier"
         ],
         "php-codesniffer": [
             "@php-codesniffer-install",
@@ -68,7 +72,7 @@
             "@php tools/php-codesniffer/vendor/bin/phpcbf --standard=PSRDefault src tests"
         ],
         "php-codesniffer-install": [
-            "mkdir -p tools/php-codesniffer",
+            "@create-tool-directories",
             "composer require --no-interaction --working-dir=tools/php-codesniffer squizlabs/php_codesniffer",
             "@php tools/php-codesniffer/vendor/bin/phpcs --config-set installed_paths vendor/de-swebhosting/php-codestyle/PhpCodeSniffer"
         ],
@@ -81,21 +85,33 @@
             "@php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix"
         ],
         "php-cs-fixer-install": [
-            "mkdir -p tools/php-cs-fixer",
+            "@create-tool-directories",
             "composer require --no-interaction --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer"
         ],
-        "php-lint": "find src tests -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v 'No syntax errors detected')",
+        "php-lint": "find . -path ./tools -prune -false -o -path ./vendor -prune -false -o -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n",
         "phpmd": [
-            "mkdir -p tools/phpmd",
+            "@create-tool-directories",
             "composer require --no-interaction --working-dir=tools/phpmd phpmd/phpmd",
             "@php tools/phpmd/vendor/bin/phpmd src text vendor/de-swebhosting/php-codestyle/PhpMd/RulesetTypo3.xml"
         ],
         "phpstan": [
-            "mkdir -p tools/phpstan",
+            "@create-tool-directories",
             "composer require --working-dir=tools/phpstan phpstan/phpstan",
             "@php tools/phpstan/vendor/bin/phpstan.phar analyse src tests --level 9"
         ],
         "phpunit": "@php vendor/bin/phpunit tests",
+        "prettier": [
+            "@prettier-install",
+            "npx --prefix tools/prettier prettier --ignore-path .gitignore --check ."
+        ],
+        "prettier-fix": [
+            "@prettier-install",
+            "npx --prefix tools/prettier prettier --ignore-path .gitignore --write ."
+        ],
+        "prettier-install": [
+            "@create-tool-directories",
+            "npm install --prefix tools/prettier prettier"
+        ],
         "test": [
             "@phpunit"
         ]

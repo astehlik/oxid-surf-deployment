@@ -1,8 +1,8 @@
 # Oxid eShop Surf deployment
 
 This library contains an application that allows the deployment
-of [Oxid eShops]((https://www.oxid-esales.com/)) with
-[TYPO3 Surf]((https://github.com/TYPO3/Surf)).
+of [Oxid eShops](<(https://www.oxid-esales.com/)>) with
+[TYPO3 Surf](<(https://github.com/TYPO3/Surf)>).
 
 ## How to use it
 
@@ -32,7 +32,7 @@ $application->addNode($node);
 
 This deployment assumes that your project is based on the
 `oxid-esales/oxideshop-project` Composer package as described
-[here]((https://docs.oxid-esales.com/eshop/en/6.2/installation/new-installation/preparing-for-installation.html))
+[here](<(https://docs.oxid-esales.com/eshop/en/6.2/installation/new-installation/preparing-for-installation.html)>)
 
 This deployment assumes, that you included an override config
 with your database and path configurations. Put this at the end of the

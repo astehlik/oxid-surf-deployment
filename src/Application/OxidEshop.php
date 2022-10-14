@@ -9,7 +9,6 @@ use TYPO3\Surf\Application\BaseApplication;
 use TYPO3\Surf\Domain\Model\Deployment;
 use TYPO3\Surf\Domain\Model\Workflow;
 use TYPO3\Surf\Task\LocalShellTask;
-use TYPO3\Surf\Task\Package\GitTask;
 use TYPO3\Surf\Task\ShellTask;
 
 class OxidEshop extends BaseApplication
@@ -19,14 +18,10 @@ class OxidEshop extends BaseApplication
         parent::__construct($name);
 
         $this->setOption('keepReleases', 3);
-        $this->setOption('TYPO3\Surf\DefinedTask\Composer\LocalInstallTask[composerCommandPath]', 'composer.phar');
-        $this->setOption(ComposerDumpAutoloadTask::class . '[composerCommandPath]', 'composer');
-        $this->setOption(GitTask::class . '[hardClean]', true);
+        $this->setOption('composerCommandPath', 'composer');
+        $this->setOption('hardClean', true);
 
-        $this->setOption(
-            'TYPO3\\Surf\\Task\\Transfer\\RsyncTask[rsyncExcludes]',
-            $this->getRsyncExcludes()
-        );
+        $this->setOption('rsyncExcludes', self::getRsyncExcludes());
 
         $this->addSymlink('source/config.inc.override.php', '../../../shared/source/config.inc.override.php');
 
@@ -36,35 +31,9 @@ class OxidEshop extends BaseApplication
     }
 
     /**
-     * @SuppressWarnings(PHPMD.MissingImport)
-     */
-    public function enableHardLinkReleaseIfAvailable(Workflow $workflow): void
-    {
-        if (class_exists('De\\SWebhosting\\TYPO3Surf\\HardlinkReleaseRegisterer')) {
-            /** @noinspection PhpFullyQualifiedNameUsageInspection */
-            /** @noinspection PhpUndefinedClassInspection */
-            /** @noinspection PhpUndefinedNamespaceInspection */
-            (new \De\SWebhosting\TYPO3Surf\HardlinkReleaseRegisterer())
-                ->replaceSymlinkWithHardlinkRelease($workflow, $this);
-        }
-    }
-
-    public function registerTasks(Workflow $workflow, Deployment $deployment): void
-    {
-        parent::registerTasks($workflow, $deployment);
-
-        $this->enableHardLinkReleaseIfAvailable($workflow);
-
-        $this->registerFixPermissionsTask($workflow);
-        $this->registerGruntBuildTask($workflow);
-
-        $workflow->addTask(ComposerDumpAutoloadTask::class, 'update');
-    }
-
-    /**
      * @return string[]
      */
-    protected function getRsyncExcludes(): array
+    public static function getRsyncExcludes(): array
     {
         return [
             '/deployment',
@@ -97,6 +66,33 @@ class OxidEshop extends BaseApplication
             'webpack.mix.js',
             'yarn.lock',
         ];
+    }
+
+    public function registerTasks(Workflow $workflow, Deployment $deployment): void
+    {
+        parent::registerTasks($workflow, $deployment);
+
+        $this->enableHardLinkReleaseIfAvailable($workflow);
+
+        $this->registerFixPermissionsTask($workflow);
+        $this->registerGruntBuildTask($workflow);
+
+        $workflow->addTask(ComposerDumpAutoloadTask::class, 'update', $this);
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.MissingImport)
+     */
+    private function enableHardLinkReleaseIfAvailable(Workflow $workflow): void
+    {
+        if (class_exists('De\\SWebhosting\\TYPO3Surf\\HardlinkReleaseRegisterer')) {
+            /** @noinspection RedundantSuppression */
+            /** @noinspection PhpFullyQualifiedNameUsageInspection */
+            /** @noinspection PhpUndefinedClassInspection */
+            /** @noinspection PhpUndefinedNamespaceInspection */
+            (new \De\SWebhosting\TYPO3Surf\HardlinkReleaseRegisterer())
+                ->replaceSymlinkWithHardlinkRelease($workflow, $this);
+        }
     }
 
     private function registerFixPermissionsTask(Workflow $workflow): void
