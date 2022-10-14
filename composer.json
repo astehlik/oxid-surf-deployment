@@ -60,7 +60,6 @@
             "@prettier-fix"
         ],
         "lint": [
-            "@bc-check",
             "@composer-validate",
             "@composer-normalize",
             "@php-codesniffer",

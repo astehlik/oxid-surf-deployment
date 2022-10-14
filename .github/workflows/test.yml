@@ -7,12 +7,43 @@ on:
   pull_request:
   workflow_dispatch:
 jobs:
-  test:
+  test-primary-platform:
+    test:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          php-version: ${{ matrix.php-version }}
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            # Required for roave/backward-compatibility-check
+            fetch-depth: 0
+
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: "8.1"
+
+        - name: Install dependencies
+          run: composer install
+
+        - name: Run linting
+          run: composer run-script lint
+
+        - name: Run tests
+          run: composer run-script test
+
+        - name: Check backwards compatibility
+          run: composer run-script bc-test
+
+  test-cross-platform:
     runs-on: ${{ matrix.operating-system }}
+    needs: ["test-primary-platform"]
     strategy:
       matrix:
-        operating-system: ["ubuntu-latest", "windows-latest", "macos-latest"]
-        php-versions: ["7.4", "8.0", "8.1"]
+        operating-system: ["windows-latest", "macos-latest"]
+        php-version: ["7.4", "8.0", "8.1"]
     steps:
       - name: Disable autocrlf to ensure linux linebreaks on windows
         run: git config --global core.autocrlf false
@@ -26,7 +57,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ matrix.php-version }}
 
       - name: Install dependencies
         run: composer install
